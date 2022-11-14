@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -25,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -56,6 +58,10 @@ public class OOPGUI1Dolgozat implements ActionListener {
     private JPanel pin_panel;
     private JPanel settings;
     private Color btncolor;
+    private JPanel game_field;
+    private JPanel game_settings;
+    private String currentPlayer;
+    private int[] mapsize;
     
     public static void main(String[] args) {
         new OOPGUI1Dolgozat();
@@ -110,13 +116,27 @@ public class OOPGUI1Dolgozat implements ActionListener {
         container.removeAll();
         login = new JPanel();
         game = new JPanel();
-        login.updateUI();
-        game.updateUI();
+        
         container.addTab("Bejelentkezés", login);
         container.addTab("Játék", game);
 
 //        login.add(new JLabel("login"));
 //        game.add(new JLabel("game"));
+        game.setLayout(new BoxLayout(game, 0));
+        game_field = new JPanel();
+        mapsize = new int[] {3,4,5};
+        currentPlayer = "X";
+        
+        
+        placeGameField(3);
+        game_settings = new JPanel();
+//        JList<Integer> size_option = new JList<Integer>(mapsize);
+        
+        
+        game.add(game_field);
+        game.add(game_settings);
+
+        
         pin_panel = new JPanel();
         settings = new JPanel();
         pin_panel.setBorder(new TitledBorder("Pin kód"));
@@ -181,13 +201,20 @@ public class OOPGUI1Dolgozat implements ActionListener {
             pin_field.setText("");
         }
     }
-            private void clickExit(){
+    private void clickExit(){
             int v = JOptionPane.showConfirmDialog(null, "Biztosan kilépsz?", "KILÉPÉS", JOptionPane.YES_NO_OPTION);
             if (v == 0) {
             System.exit(0);
         }
         }
     
+    private void placeGameField(int size){
+        game_field.setLayout(new GridLayout(size, size));
+        for (int i = 0; i < size*size; i++) {
+            game_field.add(new JButton("_"));
+        }
+        
+    }
     class Restart implements ActionListener{
 
         @Override
