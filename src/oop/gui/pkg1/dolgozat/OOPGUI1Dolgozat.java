@@ -13,11 +13,14 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -25,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
@@ -51,17 +55,18 @@ public class OOPGUI1Dolgozat implements ActionListener {
     private JCheckBox shuffle;
     private JPanel pin_panel;
     private JPanel settings;
-
+    private Color btncolor;
+    
     public static void main(String[] args) {
         new OOPGUI1Dolgozat();
     }
 
     public OOPGUI1Dolgozat() {
         frame = new JFrame("OOP-GUI 1.dolgozat");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
         Dimension dm = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setBounds(dm.width / 2 - 150, dm.height / 2 - 125, 410, 350);
-
+        frame.addWindowListener(new Exit());
         jbar = new JMenuBar();
 
         JMenu mopt1 = new JMenu("Program");
@@ -74,6 +79,8 @@ public class OOPGUI1Dolgozat implements ActionListener {
         mopt1.add(opt1);
         mopt1.add(opt2);
 
+        opt2.addActionListener(new Quit());
+        
         JRadioButtonMenuItem opt3 = new JRadioButtonMenuItem("Vizszintes");
         JRadioButtonMenuItem opt4 = new JRadioButtonMenuItem("Függőleges");
         ButtonGroup mbtns = new ButtonGroup();
@@ -81,10 +88,30 @@ public class OOPGUI1Dolgozat implements ActionListener {
         mbtns.add(opt3);
         mopt2.add(opt3);
         mopt2.add(opt4);
+        opt3.setSelected(true);
 
+        opt1.addActionListener(new Restart());
+        
         container = new JTabbedPane();
+        
+        start();
+        frame.setResizable(false);
+        frame.setJMenuBar(jbar);
+        frame.add(container);
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        setNumbers(shuffle(shuffle.isSelected()));
+    }
+    
+    private void start(){
+        container.removeAll();
         login = new JPanel();
         game = new JPanel();
+        login.updateUI();
+        game.updateUI();
         container.addTab("Bejelentkezés", login);
         container.addTab("Játék", game);
 
@@ -103,6 +130,7 @@ public class OOPGUI1Dolgozat implements ActionListener {
         login.add(settings);
 
         shuffle = new JCheckBox("Kever");
+        shuffle.setSelected(false);
         JLabel string1 = new JLabel("Kód:");
         pin_field = new JTextField();
 
@@ -114,15 +142,7 @@ public class OOPGUI1Dolgozat implements ActionListener {
         setPinAction(jbtns);
 
         shuffle.addActionListener(this);
-
-        frame.setJMenuBar(jbar);
-        frame.add(container);
-        frame.setVisible(true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        setNumbers(shuffle(shuffle.isSelected()));
+        
     }
 
     private void createButtons(JPanel parent) {
@@ -132,6 +152,7 @@ public class OOPGUI1Dolgozat implements ActionListener {
         jbtns = parent.getComponents();
         JButton last = (JButton) jbtns[jbtns.length - 1];
         last.setText("0");
+        btncolor = last.getBackground();
     }
 
     private void setPinAction(Component[] cs) {
@@ -156,19 +177,86 @@ public class OOPGUI1Dolgozat implements ActionListener {
         for (int i = 0; i < jbtns.length; i++) {
             JButton jbtn = (JButton) jbtns[i];
             jbtn.setText(""+a.get(i));
+            jbtn.setBackground(btncolor);
+            pin_field.setText("");
         }
     }
-
-    class Pins implements ActionListener {
+            private void clickExit(){
+            int v = JOptionPane.showConfirmDialog(null, "Biztosan kilépsz?", "KILÉPÉS", JOptionPane.YES_NO_OPTION);
+            if (v == 0) {
+            System.exit(0);
+        }
+        }
+    
+    class Restart implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton button = (JButton) e.getSource();
+            start();
+        }
+        
+    }
+
+    class Exit implements WindowListener {
+
+        @Override
+        public void windowOpened(WindowEvent e) {
+           
+        }
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            clickExit();
+        }
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+           
+        }
+
+        @Override
+        public void windowIconified(WindowEvent e) {
+            
+        }
+
+        @Override
+        public void windowDeiconified(WindowEvent e) {
+           
+        }
+
+        @Override
+        public void windowActivated(WindowEvent e) {
+            
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+           
+        }
+ 
+        
+    }
+    
+    class Quit implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           clickExit();
+        }
+        
+    }
+    class Pins implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            click(e);
+        }
+
+        private void click(ActionEvent event){
+            JButton button = (JButton) event.getSource();
             button.setBackground(Color.GRAY);
             String text = pin_field.getText();
             pin_field.setText(text + button.getText());
         }
-
     }
 
 }
