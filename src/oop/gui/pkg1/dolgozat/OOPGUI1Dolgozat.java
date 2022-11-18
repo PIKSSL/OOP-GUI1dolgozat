@@ -103,8 +103,8 @@ public class OOPGUI1Dolgozat implements ActionListener {
 
         JRadioButtonMenuItem opt3 = new JRadioButtonMenuItem("Vizszintes");
         JRadioButtonMenuItem opt4 = new JRadioButtonMenuItem("Függőleges");
-        opt3.addActionListener(new PlacementChanged());
-        opt4.addActionListener(new PlacementChanged());
+//        opt3.addActionListener(new PlacementChanged());
+//        opt4.addActionListener(new PlacementChanged());
         
         mbtns = new ButtonGroup();
         mbtns.add(opt4);
